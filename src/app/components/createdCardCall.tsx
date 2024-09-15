@@ -61,9 +61,9 @@ export function CreatedPosts() {
     }
   };
 
-  const handleDelete = async(postId : number) => {
+  const handleCensor = async(postId : number) => {
       try {
-      const response = await fetch("http://ec2-54-252-151-126.ap-southeast-2.compute.amazonaws.com:3000/deletePost", {
+      const response = await fetch("http://ec2-54-252-151-126.ap-southeast-2.compute.amazonaws.com:3000/postcensor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,9 +147,9 @@ export function CreatedPosts() {
                       </button>
                       <button
                         className="w-full sm:w-auto px-4 py-2 bg-gray-800 text-white font-bold rounded-xl text-xs sm:text-sm hover:bg-gray-700 transition duration-200"
-                        onClick={() => {handleDelete(item.id)}}
+                        onClick={() => {handleCensor(item.id)}}
                       >
-                        Delete
+                         {item.censor ? "Uncensor" : "Censor"}
                       </button>
                       <button
                         onClick={() => toggleStatusCard(item.id)}
