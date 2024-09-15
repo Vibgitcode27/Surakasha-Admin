@@ -27,12 +27,12 @@ export function LoginFormDemo() {
     e.preventDefault();
     setError("");
     try {
-      const response = await fetch("http://ec2-54-252-151-126.ap-southeast-2.compute.amazonaws.com:3000/signIn", {
+      const response = await fetch("http://ec2-54-252-151-126.ap-southeast-2.compute.amazonaws.com:3000/admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ "username" : email,  password }),
       });
 
       if (!response.ok) {
@@ -40,9 +40,9 @@ export function LoginFormDemo() {
       }
 
       const data = await response.json();
-      console.log(data.user.email);
-      dispatch(setGlobalEmail({ email: data.user.email, name: data.user.firstname + " " + data.user.lastname }));
-      console.log("login success: " + newUser + " " + newUserName);
+      console.log(data.message);
+      // dispatch(setGlobalEmail({ email: data.user.email, name: data.user.firstname + " " + data.user.lastname }));
+      // console.log("login success: " + newUser + " " + newUserName);
       router.push("/dashboard");
     } catch (error) {
       console.error("There was a problem with the fetch operation:");
@@ -105,25 +105,7 @@ export function LoginFormDemo() {
           <BottomGradient />
         </button>
 
-        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-4 h-[1px] w-full" />
-
-        <Flex justify="center" align="center" className="mb-4">
-          <h3 style={{ color: "gray" }}>Or</h3>
-        </Flex>
-
-        <div className="flex flex-col space-y-4">
-          <button
-            className="relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            onClick={handleSignUpClick}
-            type="button"
-          >
-            <IconKey className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-              Sign Up
-            </span>
-            <BottomGradient />
-          </button>
-        </div>
+        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-4 h-[1px] w-full" /> 
       </form>
     </div>
   );

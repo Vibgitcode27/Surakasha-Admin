@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import logo from "../assets/logo2.png";
 import Image from 'next/image';
-import { Spin , message } from 'antd'; // Import Spin from Ant Design
+import { Spin , message } from 'antd';
 import { motion } from "framer-motion";
 import { FollowerPointerCard } from "../components/ui/card";
 import { IconMapPinFilled } from '@tabler/icons-react';
 import { Flex, Timeline } from 'antd';
+import { Modal, Input, Button, Typography } from 'antd';
+
+const { TextArea } = Input;
+const { Title } = Typography;
 
 interface Post {
   id: number;
@@ -22,9 +26,26 @@ interface Post {
 
 export function FollowingPointerDemo() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [statusCardId, setStatusCardId] = useState<number | null>(null); // Track status for individual cards
+  const [statusCardId, setStatusCardId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    console.log('Posted:', inputValue);
+    setInputValue('');
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   const success = () => {
     messageApi.open({
@@ -51,13 +72,35 @@ export function FollowingPointerDemo() {
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     } finally {
-      setLoading(false); // Set loading to false once the data is fetched or an error occurs
+      setLoading(false);
     }
   };
 
     const handleCensor = async(postId : number) => {
       try {
       const response = await fetch("http://ec2-54-252-151-126.ap-southeast-2.compute.amazonaws.com:3000/postcensor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts. Please try again.");
+      }
+
+      const data = await response.json();
+      success();
+      console.log("deleted " + data);
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  }
+
+  const handleCompletion = async(postId : number) => {
+      try {
+      const response = await fetch("http://ec2-54-252-151-126.ap-southeast-2.compute.amazonaws.com:3000/toggleCompleted", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +130,7 @@ export function FollowingPointerDemo() {
   };
 
   const toggleStatusCard = (id: number) => {
-    setStatusCardId((prev) => (prev === id ? null : id)); // Toggle the status for the clicked card
+    setStatusCardId((prev) => (prev === id ? null : id));
   };
 
   return (
@@ -140,6 +183,7 @@ export function FollowingPointerDemo() {
                       <button
                         style={{ backgroundColor: item.completed ? "green" : "red", cursor: "pointer" }}
                         className="w-full sm:w-auto px-4 py-2 text-white font-bold rounded-xl text-xs sm:text-sm hover:opacity-80 transition duration-200"
+                        onClick={() => {handleCompletion(item.id)}}
                       >
                         {item.completed ? "Completed" : "Pending"}
                       </button>
@@ -180,6 +224,15 @@ export function FollowingPointerDemo() {
                           />
                         </Flex>
                       </motion.div>
+
+                      <motion.button
+                        onClick={showModal}
+                        className="w-full sm:w-auto px-4 py-2 bg-gray-800 text-white font-bold rounded-xl text-xs sm:text-sm hover:bg-gray-700 transition duration-200">
+                            <Button type="primary" onClick={showModal}>
+                                Update Status
+                            </Button>
+                        </motion.button>
+
                     </>
                   ) : statusCardId === item.id ? (
                     <motion.h2
@@ -199,6 +252,29 @@ export function FollowingPointerDemo() {
           ))
         )}
       </div>
+      <Modal
+        title={<Title level={4}>Create Post</Title>}
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Post
+          </Button>,
+        ]}
+        width="90%"
+        style={{ maxWidth: '600px' }}
+      >
+        <TextArea
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="What's on your mind?"
+          autoSize={{ minRows: 3, maxRows: 5 }}
+        />
+      </Modal>
     </div>
   );
 }

@@ -321,7 +321,7 @@ function Skeleton3() {
 const Skeleton4 = () => (
   <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100">
     <Flex align="center" justify="center" style={{width : "100%"}}>
-      <h1 className="text-animate" style={{ fontSize : "120px" , color : "red"}}>{totalUserPosts ? totalUserPosts : 0}</h1>
+      <h1 className="text-animate" style={{ fontSize : "120px" , color : "red"}}>--</h1>
     </Flex>
   </div>
 );
@@ -329,7 +329,7 @@ const Skeleton4 = () => (
 const Skeleton5 = () => (
   <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100">
     <Flex align="center" justify="center" style={{width : "100%"}}>
-      <h1 className="text-animate2" style={{ fontSize : "120px" , color : "red"}}>{resolvedUserPosts ? resolvedUserPosts : 0}</h1>
+      <h1 className="text-animate2" style={{ fontSize : "120px" , color : "red"}}>--</h1>
     </Flex>
   </div>
 );
@@ -394,7 +394,7 @@ const Skeleton6 = () => (
   const items = [
   {
     title: "Name",
-    description: <div style={{ fontSize : "27px"  }}>{name ? name : "Jimmy Joe"}</div>,
+    description: <div style={{ fontSize : "27px"  }}>{name ? name : "Admin Dashboard"}</div>,
     header: <Skeleton1 />,
     icon: <IconClipboardCopy className="h-4 w-4 text-white" />,
   },
